@@ -9,8 +9,8 @@
 #define S_PARED_2 0
 #define S_PARED_3 2
 
-#define PWM_MD_A 20
-#define PWM_MD_B 21
+#define PWM_MD_A 21
+#define PWM_MD_B 20
 #define PWM_MI_A 3
 #define PWM_MI_B 4
 

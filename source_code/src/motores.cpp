@@ -9,7 +9,11 @@ int Vel_D = 0;
 int Vel_I = 0;
 
 void inicializar_motores() {
-  ledcSetup(0, 4000, 10); // Canal de PWM (0 - 16),Frecuencia, Resolucion (nº bits)
+  ledcSetup(MD_A, 4000, 10); // Canal de PWM (0 - 16),Frecuencia, Resolucion (nº bits)
+  ledcSetup(MD_B, 4000, 10); // Canal de PWM (0 - 16),Frecuencia, Resolucion (nº bits)
+  ledcSetup(MI_A, 4000, 10); // Canal de PWM (0 - 16),Frecuencia, Resolucion (nº bits)
+  ledcSetup(MI_B, 4000, 10); // Canal de PWM (0 - 16),Frecuencia, Resolucion (nº bits)
+
   ledcAttachPin(PWM_MD_A, MD_A);
   ledcAttachPin(PWM_MD_B, MD_B);
   ledcAttachPin(PWM_MI_A, MI_A);

@@ -18,7 +18,7 @@
 
 #define DETECCION_FRONTAL 180
 
-#define DINAMICO true
+#define DINAMICO false
 
 bool run = false;
 int objetivo_D;
@@ -36,6 +36,8 @@ int sumError = 0;
 int ultError = 0;
 int correccion = 0;
 bool frontal = false;
+float millis_PID = 0;
+float micros_filtro = 0;
 
 bool start = false;
 bool mano_izquierda = false;
@@ -82,7 +84,9 @@ void check_reference_wall_change() {
   }
   if (mano_izquierda) {
     digitalWrite(LED_IZQUIERDA, HIGH);
+    digitalWrite(LED_DERECHA, LOW);
   } else {
+    digitalWrite(LED_DERECHA, HIGH);
     digitalWrite(LED_IZQUIERDA, LOW);
   }
 }
@@ -113,8 +117,6 @@ void loop() {
   // prints_sensores();
   // return;
 
-  filtro_sensores();
-
   if (!iniciado && !start) {
     if (boton_D()) {
       iniciado = true;
@@ -134,9 +136,9 @@ void loop() {
       digitalWrite(LED_IZQUIERDA, LOW);
     }
   } else if (!start && iniciado) {
-    if (sensor2_analog() >= 450) {
+    if (sensor2()) {
       start = true;
-      while (analogRead(S_PARED_2) >= 450) { // Este while es para hacer parpadear el led mientras le das la orden de arranque
+      while (sensor2()) { // Este while es para hacer parpadear el led mientras le das la orden de arranque
         digitalWrite(LED_ADELANTE, HIGH);
         digitalWrite(LED_DERECHA, HIGH);
         digitalWrite(LED_IZQUIERDA, HIGH);
@@ -152,52 +154,60 @@ void loop() {
       delay(700);
       startedMillis = millis();
     }
-  } else if (start) {
+  } 
 
     //////////////////////////////////////////////
     ////         TODO EL CODIGO!!!!          /////
     //////////////////////////////////////////////
-    check_reference_wall_change();
 
-    if (mano_izquierda == true) {
-      error = objetivo_I - sensor3_analog();
-      if (frontal && !DINAMICO) {
-        asignacion_vel_motores(0, 0);
-        delay(70);
-        asignacion_vel_motores(0, -80);
-        delay(238);
-        asignacion_vel_motores(0, 0);
-        return;
-      }
-    }
-    if (mano_derecha == true) {
-      error = objetivo_D - sensor1_analog();
-      if (frontal && !DINAMICO) {
-        asignacion_vel_motores(0, 0);
-        delay(70);
-        asignacion_vel_motores(0, 80);
-        delay(250);
-        asignacion_vel_motores(0, 0);
-        return;
-      }
-    }
-    if (DINAMICO && frontal) {
-      giros_dinamicos(); // Añadir lectura delantera al error para tener giros dinamicos
+    if (start && micros() - micros_filtro > 50) {
+      filtro_sensores();
+      micros_filtro = micros();
     }
 
-    p = kp * error;
-    d = kd * (error - ultError);
-    ultError = error;
-    correccion = p + d;
-    if (mano_derecha == true) {
-      correccion = -correccion;
+    if (start && millis() - millis_PID > 1) {
+      check_reference_wall_change();
+
+      if (mano_izquierda == true) {
+        error = objetivo_I - sensor3_analog();
+        if (frontal && !DINAMICO) {
+          asignacion_vel_motores(0, 0);
+          delay(70);
+          asignacion_vel_motores(0, -300);
+          delay(200);
+          asignacion_vel_motores(0, 0);
+          return;
+        }
+      }
+      if (mano_derecha == true) {
+        error = objetivo_D - sensor1_analog();
+        if (frontal && !DINAMICO) {
+          asignacion_vel_motores(0, 0);
+          delay(70);
+          asignacion_vel_motores(0, 300);
+          delay(200);
+          asignacion_vel_motores(0, 0);
+          return;
+        }
+      }
+      if (DINAMICO && frontal) {
+        giros_dinamicos(); // Añadir lectura delantera al error para tener giros dinamicos
+      }
+
+      p = kp * error;
+      d = kd * (error - ultError);
+      ultError = error;
+      correccion = p + d;
+      if (mano_derecha == true) {
+        correccion = -correccion;
+      }
+      asignacion_vel_motores(velBase, correccion);
+    } else {
+      asignacion_vel_motores(0, 0);
     }
-    asignacion_vel_motores(velBase, correccion);
-  } else {
-    asignacion_vel_motores(0, 0);
+    millis_PID = millis();
   }
-
   //////////////////////////////////////////////
   ////     Y HASTA AQUI EL CODIGO!!!!      /////
   //////////////////////////////////////////////
-}
+
