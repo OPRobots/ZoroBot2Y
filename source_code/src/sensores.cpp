@@ -3,7 +3,7 @@
 
 const int MAGNITUD_FILTRO = 20;
 const int UMBRAL = 1700;
-const int CONTADOR = 6;
+const int CONTADOR = 2;
 
 int contador_boton_D = 0;
 int contador_boton_I = 0;
@@ -29,6 +29,10 @@ void filtro_sensores() {
   Filtro_s3[i_s] = analogRead(S_PARED_3);
   i_s = (i_s + 1) % MAGNITUD_FILTRO; // Avanza el índice circularmente cuando supera MAGNITUD FILTRO vuelve a ser 0
 
+  s1 = 0;
+  s2 = 0;
+  s3 = 0;
+  
   for (int i = 0; i < MAGNITUD_FILTRO; i++) {
     s1 += Filtro_s1[i];
     s2 += Filtro_s2[i];

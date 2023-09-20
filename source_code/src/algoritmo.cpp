@@ -1,0 +1,36 @@
+#include "algoritmo.h"
+
+#define REFERENCE_WALL_CHANGE_LENGTH 0 // numero de cambios
+#define MILLIS_REFERENCE_WALL_CHANGE_1 3000U
+#define MILLIS_REFERENCE_WALL_CHANGE_2 MILLIS_REFERENCE_WALL_CHANGE_1 + 15000U
+#define MILLIS_REFERENCE_WALL_CHANGE_3 MILLIS_REFERENCE_WALL_CHANGE_2 + 15000U
+#define MILLIS_REFERENCE_WALL_CHANGE_4 MILLIS_REFERENCE_WALL_CHANGE_3 + 15000U
+#define MILLIS_REFERENCE_WALL_CHANGE_5 MILLIS_REFERENCE_WALL_CHANGE_4 + 15000U
+
+unsigned long REFERENCE_WALL_CHANGE_MILLIS[] = {
+    MILLIS_REFERENCE_WALL_CHANGE_1,
+    MILLIS_REFERENCE_WALL_CHANGE_2,
+    MILLIS_REFERENCE_WALL_CHANGE_3,
+    MILLIS_REFERENCE_WALL_CHANGE_4,
+    MILLIS_REFERENCE_WALL_CHANGE_5};
+
+bool REFERENCE_WALL_CHANGE_DONE[] = {false, false, false, false, false};
+
+bool check_reference_wall_change(long startedMillis, bool mano) {
+  for (int i = 0; i < REFERENCE_WALL_CHANGE_LENGTH; i++) {
+    if (!REFERENCE_WALL_CHANGE_DONE[i] &&
+        REFERENCE_WALL_CHANGE_MILLIS[i] != 0 &&
+        millis() > startedMillis + REFERENCE_WALL_CHANGE_MILLIS[i]) {
+      mano = !mano;
+      REFERENCE_WALL_CHANGE_DONE[i] = true;
+    }
+  }
+  if (mano) {
+    digitalWrite(LED_IZQUIERDA, HIGH);
+    digitalWrite(LED_DERECHA, LOW);
+  } else {
+    digitalWrite(LED_DERECHA, HIGH);
+    digitalWrite(LED_IZQUIERDA, LOW);
+  }
+  return mano;
+}
