@@ -13,7 +13,7 @@
 #define DERECHA 0
 #define IZQUIERDA 1
 
-#define DETECCION_FRONTAL 180
+#define DETECCION_FRONTAL 500
 #define TIEMPO_FILTRO 20
 #define DINAMICO false
 
@@ -152,6 +152,12 @@ void loop() {
     if (millis() - millis_PID > 1) {
       digitalWrite(LED_ADELANTE, LOW);
       check_reference_wall_change(startedMillis, mano);
+
+      if (sensor2_analog() > DETECCION_FRONTAL){
+        frontal = true;
+      }else{
+        frontal = false;
+      }
 
       if (mano == IZQUIERDA) {
         error = objetivo_I - sensor3_analog();

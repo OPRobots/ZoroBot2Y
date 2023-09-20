@@ -2,7 +2,8 @@
 #include "pines.h"
 
 const int MAGNITUD_FILTRO = 20;
-const int UMBRAL = 1700;
+const int UMBRAL_FILTRO = 2000;
+const int UMBRAL = 2400;
 const int CONTADOR = 2;
 
 int contador_boton_D = 0;
@@ -16,6 +17,10 @@ int s1 = 0;
 int s2 = 0;
 int s3 = 0;
 
+int s1_aux = 0;
+int s2_aux = 0;
+int s3_aux = 0;
+
 int Filtro_s1[MAGNITUD_FILTRO];
 int Filtro_s2[MAGNITUD_FILTRO];
 int Filtro_s3[MAGNITUD_FILTRO];
@@ -24,15 +29,32 @@ int i_s = 0;
 
 void filtro_sensores() {
 
-  Filtro_s1[i_s] = analogRead(S_PARED_1);
-  Filtro_s2[i_s] = analogRead(S_PARED_2);
-  Filtro_s3[i_s] = analogRead(S_PARED_3);
+  s1_aux = analogRead(S_PARED_1);
+  s2_aux = analogRead(S_PARED_2);
+  s3_aux = analogRead(S_PARED_3);
+
+  if (s1_aux > UMBRAL_FILTRO) {
+    Filtro_s1[i_s] = s1_aux;
+  } else {
+    Filtro_s1[i_s] = UMBRAL_FILTRO;
+  }
+  if (s2_aux > UMBRAL_FILTRO) {
+    Filtro_s2[i_s] = s2_aux;
+  } else {
+    Filtro_s2[i_s] = s2;
+  }
+  if (s3_aux > UMBRAL_FILTRO) {
+    Filtro_s3[i_s] = s3_aux;
+  } else {
+    Filtro_s3[i_s] = UMBRAL;
+  }
+
   i_s = (i_s + 1) % MAGNITUD_FILTRO; // Avanza el índice circularmente cuando supera MAGNITUD FILTRO vuelve a ser 0
 
   s1 = 0;
   s2 = 0;
   s3 = 0;
-  
+
   for (int i = 0; i < MAGNITUD_FILTRO; i++) {
     s1 += Filtro_s1[i];
     s2 += Filtro_s2[i];
@@ -46,6 +68,11 @@ void filtro_sensores() {
   s1_bool = s1 > UMBRAL;
   s2_bool = s2 > UMBRAL;
   s3_bool = s3 > UMBRAL;
+
+  s1 = map(s1, 2000, 3000, 0, 1000);
+  s2 = map(s2, 2000, 3000, 0, 1000);
+  s3 = map(s3, 2000, 3000, 0, 1000);
+
 }
 
 bool sensor1() {
