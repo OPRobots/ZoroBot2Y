@@ -2,8 +2,8 @@
 #include "pines.h"
 
 const int MAGNITUD_FILTRO = 20;
-const int UMBRAL_FILTRO = 2000;
-const int UMBRAL = 2400;
+const int UMBRAL_FILTRO = 2500;
+const int UMBRAL = 2800;
 const int CONTADOR = 2;
 
 int contador_boton_D = 0;
@@ -41,12 +41,12 @@ void filtro_sensores() {
   if (s2_aux > UMBRAL_FILTRO) {
     Filtro_s2[i_s] = s2_aux;
   } else {
-    Filtro_s2[i_s] = s2;
+    Filtro_s2[i_s] = UMBRAL_FILTRO;
   }
   if (s3_aux > UMBRAL_FILTRO) {
     Filtro_s3[i_s] = s3_aux;
   } else {
-    Filtro_s3[i_s] = UMBRAL;
+    Filtro_s3[i_s] = UMBRAL_FILTRO;
   }
 
   i_s = (i_s + 1) % MAGNITUD_FILTRO; // Avanza el índice circularmente cuando supera MAGNITUD FILTRO vuelve a ser 0
@@ -69,9 +69,9 @@ void filtro_sensores() {
   s2_bool = s2 > UMBRAL;
   s3_bool = s3 > UMBRAL;
 
-  s1 = map(s1, 2000, 3000, 0, 1000);
-  s2 = map(s2, 2000, 3000, 0, 1000);
-  s3 = map(s3, 2000, 3000, 0, 1000);
+  s1 = map(s1, UMBRAL_FILTRO, 3000, 0, 1000);
+  s2 = map(s2, UMBRAL_FILTRO, 3000, 0, 1000);
+  s3 = map(s3, UMBRAL_FILTRO, 3000, 0, 1000);
 
 }
 

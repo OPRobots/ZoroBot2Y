@@ -33,13 +33,13 @@ void asignacion_vel_motores(int vel, int correccion) {
   velI = map(velI, -1000, 1000, -1024, 1024);
 
   // de tal modo que si la correccion hace que una rueda se ponga a mas de 255, se limita a 255 y a la otra se le aplique la correccion restante
-  if (velD > 255) {
-    velI = velI - (velD - 255);
-    velD = 255;
+  if (velD > 1024) {
+    velI = velI - (velD - 1024);
+    velD = 1024;
   }
-  if (velI > 255) {
-    velD = velD - (velI - 255);
-    velI = 255;
+  if (velI > 1024) {
+    velD = velD - (velI - 1024);
+    velI = 1024;
   }
 
   // asiganmos valores a la rueda derecha teniendo en cuenta de que si el valor es negativo va hacia atras

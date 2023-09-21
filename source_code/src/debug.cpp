@@ -50,9 +50,9 @@ void imprimir_sensores_raw() {
   Serial.print(" ");
   Serial.print(analogRead(S_PARED_2));
   Serial.print(" ");
-  Serial.println(analogRead(S_PARED_3));
+  Serial.print(analogRead(S_PARED_3));
 
-  delay(85);
+  // delay(85);
 }
 
 void imprimir_sensores_filtrados() {
@@ -77,7 +77,7 @@ void imprimir_sensores_filtrados_analog() {
   Serial.print(" ");
   Serial.print(sensor2_analog());
   Serial.print(" ");
-  Serial.println(sensor3_analog());
+  Serial.print(sensor3_analog());
 
-   delay(10);
+   //delay(10);
 }

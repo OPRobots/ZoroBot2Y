@@ -13,24 +13,25 @@
 #define DERECHA 0
 #define IZQUIERDA 1
 
-#define DETECCION_FRONTAL 500
+#define DETECCION_FRONTAL 1000
 #define TIEMPO_FILTRO 20
 #define DINAMICO false
+#define MAX_ERROR_PID 100 // 0 anula la limitacion de error
 
 bool run = false;
-int objetivo_D;
-int objetivo_I;
+int objetivo_D = 0;
+int objetivo_I = 0;
 int error = 0;
-int velBase = 500;
+int velBase = 300;
 
 bool mano = false;
 
 float p = 0;
 float d = 0;
-float kp = 0.03;
+float kp = 1;
 float ki = 0;
-float kd = 0;
-float kf = 0.8; // constante que determina cuanto afecta el sensor frontal para los giros dinamicos
+float kd = 25;
+float kf = 0; // constante que determina cuanto afecta el sensor frontal para los giros dinamicos
 int sumError = 0;
 int ultError = 0;
 int correccion = 0;
@@ -48,10 +49,6 @@ bool debug = false;
 unsigned long startedMillis = 0;
 
 bool iniciado = false;
-
-/////////////////////////////
-////     FUNCIONES      /////
-/////////////////////////////
 
 /////////////////////////////
 ////        SETUP       /////
@@ -74,6 +71,16 @@ void loop() {
 
   if (debug) {
     debug_inicio();
+    if (objetivo_D == 0 || objetivo_I == 0) {
+      objetivo_I = sensor3_analog();
+      objetivo_D = sensor1_analog();
+    }
+    Serial.print("\t\t\t\t");
+    Serial.print(objetivo_I - sensor3_analog());
+    Serial.print("\t");
+    Serial.print(objetivo_D - sensor1_analog());
+    Serial.print("\n");
+    delay(10);
     return;
   }
   // prints_sensores();
@@ -89,7 +96,8 @@ void loop() {
 
       for (int i = 0; i < TIEMPO_FILTRO; i++) {
         filtro_sensores();
-        digitalWrite(LED_DERECHA, !parpadeo_led_D);
+        parpadeo_led_D = !parpadeo_led_D;
+        digitalWrite(LED_DERECHA, parpadeo_led_D);
         delay(3000 / TIEMPO_FILTRO);
       }
 
@@ -105,7 +113,8 @@ void loop() {
 
       for (int i = 0; i < TIEMPO_FILTRO; i++) {
         filtro_sensores();
-        digitalWrite(LED_IZQUIERDA, !parpadeo_led_I);
+        parpadeo_led_I = !parpadeo_led_I;
+        digitalWrite(LED_IZQUIERDA, parpadeo_led_I);
         delay(3000 / TIEMPO_FILTRO);
       }
 
@@ -153,14 +162,19 @@ void loop() {
       digitalWrite(LED_ADELANTE, LOW);
       check_reference_wall_change(startedMillis, mano);
 
-      if (sensor2_analog() > DETECCION_FRONTAL){
-        frontal = true;
-      }else{
-        frontal = false;
-      }
+     // if (sensor2_analog() > DETECCION_FRONTAL) {
+     //   frontal = true;
+     // } else {
+     //   frontal = false;
+     // }
 
       if (mano == IZQUIERDA) {
-        error = objetivo_I - sensor3_analog();
+        if (sensor3_analog() > 0) {
+          error = objetivo_I - sensor3_analog();
+        } else {
+          error = MAX_ERROR_PID;
+        }
+
         if (frontal && !DINAMICO) {
           asignacion_vel_motores(0, 0);
           delay(70);
@@ -171,7 +185,12 @@ void loop() {
         }
       }
       if (mano == DERECHA) {
-        error = objetivo_D - sensor1_analog();
+        if (sensor1_analog() > 0) {
+          error = objetivo_D - sensor1_analog();
+        } else {
+          error = MAX_ERROR_PID;
+        }
+
         if (frontal && !DINAMICO) {
           asignacion_vel_motores(0, 0);
           delay(70);
@@ -181,6 +200,12 @@ void loop() {
           return;
         }
       }
+
+      // Serial.println(error);
+      // if (MAX_ERROR_PID != 0) {
+      //   error = constrain(error, -MAX_ERROR_PID, MAX_ERROR_PID);
+      // }
+
       if (DINAMICO && frontal) { // Añadir lectura delantera al error para tener giros dinamicos
         if (mano == IZQUIERDA) {
           error -= sensor2_analog() * kf;
