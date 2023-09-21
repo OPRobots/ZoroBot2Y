@@ -3,7 +3,7 @@
 // PINES
 // Sensores numerados por orden de colocación en el robot mirandolo desde arriba con la cuchilla hacia adelante
 
-void inicializar_pines(){
+void inicializar_pines() {
   pinMode(S_PARED_1, INPUT);
   pinMode(S_PARED_2, INPUT);
   pinMode(S_PARED_3, INPUT);
@@ -19,4 +19,6 @@ void inicializar_pines(){
 
   pinMode(BOTON_D, INPUT_PULLUP);
   pinMode(BOTON_I, INPUT_PULLUP);
+
+  pinMode(PIN_DEBUG, OUTPUT);
 }

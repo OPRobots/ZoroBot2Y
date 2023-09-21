@@ -2,7 +2,7 @@
 #include "pines.h"
 
 const int MAGNITUD_FILTRO = 20;
-const int UMBRAL_FILTRO = 2500;
+const int UMBRAL_FILTRO = 2400;
 const int UMBRAL = 2800;
 const int CONTADOR = 2;
 

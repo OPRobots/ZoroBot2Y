@@ -21,6 +21,7 @@
 #define BOTON_D 6
 #define BOTON_I 5
 
+#define PIN_DEBUG 9
 
 void inicializar_pines();
 
