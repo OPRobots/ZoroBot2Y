@@ -18,19 +18,25 @@ int REFERENCE_WALL_CHANGE_MILLIS[] = {
 bool REFERENCE_WALL_CHANGE_DONE[] = {false, false, false, false, false};
 
 int indice_cambios = 0;
+int indice_check_cambio = 0;
 bool tiempo_seg = true;
 bool tiempo_mseg = false;
 int patron_led = 0;
 bool configuracion_lista = false;
+long ultimo_cambio_millis = 0;
 
 bool check_reference_wall_change(long startedMillis, bool mano) {
-  for (int i = 0; i < REFERENCE_WALL_CHANGE_LENGTH; i++) {
-    if (!REFERENCE_WALL_CHANGE_DONE[i] && REFERENCE_WALL_CHANGE_MILLIS[i] != 0 && millis() > startedMillis + REFERENCE_WALL_CHANGE_MILLIS[i]) {
-      mano = !mano;
-      REFERENCE_WALL_CHANGE_DONE[i] = true;
-      //Serial.print("cambio");
-    }
+  if (ultimo_cambio_millis == 0) {
+    ultimo_cambio_millis = startedMillis;
   }
+    if (!REFERENCE_WALL_CHANGE_DONE[indice_check_cambio] && REFERENCE_WALL_CHANGE_MILLIS[indice_check_cambio] != 0 && millis() > ultimo_cambio_millis + REFERENCE_WALL_CHANGE_MILLIS[indice_check_cambio]) {
+      ultimo_cambio_millis = millis();
+      mano = !mano;
+      REFERENCE_WALL_CHANGE_DONE[indice_check_cambio] = true;
+      indice_check_cambio++;
+      // Serial.print("cambio");
+    }
+    
   if (mano) {
     digitalWrite(LED_IZQUIERDA, HIGH);
     digitalWrite(LED_DERECHA, LOW);
@@ -67,7 +73,6 @@ bool configuracion() {
         indice_cambios++;
         tiempo_seg = true;
         tiempo_mseg = false;
-        REFERENCE_WALL_CHANGE_MILLIS[indice_cambios] = REFERENCE_WALL_CHANGE_MILLIS[indice_cambios - 1];
 
         patron_led = 0;
         leds_configuracion();
@@ -153,9 +158,9 @@ void leds_configuracion() {
       digitalWrite(LED_IZQUIERDA, LOW);
       break;
     case 9:
-      digitalWrite(LED_ADELANTE, HIGH);
+      digitalWrite(LED_ADELANTE, LOW);
       digitalWrite(LED_DERECHA, LOW);
-      digitalWrite(LED_IZQUIERDA, LOW);
+      digitalWrite(LED_IZQUIERDA, HIGH);
       break;
 
     default:

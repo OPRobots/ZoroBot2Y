@@ -165,7 +165,7 @@ void loop() {
     // test = !test;
 
     filtro_sensores();
-    micros_filtro = micros();
+    //micros_filtro = micros();
     //}
 
     if (millis() - millis_PID >= 1) {
@@ -173,7 +173,7 @@ void loop() {
       digitalWrite(LED_ADELANTE, LOW);
       mano = check_reference_wall_change(startedMillis, mano);
 
-      if (analogRead(S_PARED_2) > 2800) {
+      if (sensor2_analog() > DETECCION_FRONTAL) {
         frontal = true;
       } else {
         frontal = false;
@@ -189,7 +189,7 @@ void loop() {
         if (frontal && !DINAMICO) {
           asignacion_vel_motores(0, 0);
           delay(50);
-          asignacion_vel_motores(0, -300);
+          asignacion_vel_motores(0, -200);
           delay(100);
           asignacion_vel_motores(0, 0);
           return;
@@ -205,7 +205,7 @@ void loop() {
         if (frontal && !DINAMICO) {
           asignacion_vel_motores(0, 0);
           delay(50);
-          asignacion_vel_motores(0, 300);
+          asignacion_vel_motores(0, 200);
           delay(100);
           asignacion_vel_motores(0, 0);
           return;

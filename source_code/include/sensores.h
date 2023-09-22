@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include "pines.h"
 
+void no_filtro_sensores();
 void filtro_sensores();
 bool sensor1();
 bool sensor2();

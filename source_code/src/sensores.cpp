@@ -27,6 +27,27 @@ int Filtro_s3[MAGNITUD_FILTRO];
 
 int i_s = 0;
 
+void no_filtro_sensores() {
+
+  s1_aux = analogRead(S_PARED_1);
+  s2_aux = analogRead(S_PARED_2);
+  s3_aux = analogRead(S_PARED_3);
+
+  if (s1_aux < UMBRAL_FILTRO) {
+    s1_aux = UMBRAL_FILTRO;
+  }
+  if (s2_aux < UMBRAL_FILTRO) {
+    s2_aux = UMBRAL_FILTRO;
+  }
+  if (s3_aux < UMBRAL_FILTRO) {
+    s3_aux = UMBRAL_FILTRO;
+  }
+
+  s1 = map(s1_aux, UMBRAL_FILTRO, 3000, 0, 1000);
+  s2 = map(s2_aux, UMBRAL_FILTRO, 3000, 0, 1000);
+  s3 = map(s3_aux, UMBRAL_FILTRO, 3000, 0, 1000);
+}
+
 void filtro_sensores() {
 
   s1_aux = analogRead(S_PARED_1);
@@ -72,7 +93,6 @@ void filtro_sensores() {
   s1 = map(s1, UMBRAL_FILTRO, 3000, 0, 1000);
   s2 = map(s2, UMBRAL_FILTRO, 3000, 0, 1000);
   s3 = map(s3, UMBRAL_FILTRO, 3000, 0, 1000);
-
 }
 
 bool sensor1() {
