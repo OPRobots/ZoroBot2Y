@@ -4,7 +4,7 @@
 const int MAGNITUD_FILTRO = 20;
 const int UMBRAL_FILTRO = 2400;
 const int UMBRAL = 2800;
-const int CONTADOR = 2;
+const int CONTADOR = 3;
 
 int contador_boton_D = 0;
 int contador_boton_I = 0;
@@ -98,6 +98,7 @@ int sensor3_analog() {
 bool boton_D() {
   if (!digitalRead(BOTON_D)) {
     contador_boton_D++;
+    delay(5);
   } else {
     contador_boton_D = 0;
   }
@@ -111,6 +112,7 @@ bool boton_D() {
 bool boton_I() {
   if (!digitalRead(BOTON_I)) {
     contador_boton_I++;
+    delay(5);
   } else {
     contador_boton_I = 0;
   }

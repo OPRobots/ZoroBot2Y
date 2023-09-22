@@ -5,5 +5,6 @@
 #include "sensores.h"
 
 bool check_reference_wall_change(long, bool);
-
+bool configuracion();
+void leds_configuracion();
 #endif

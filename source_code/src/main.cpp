@@ -24,7 +24,7 @@ int objetivo_I = 0;
 int error = 0;
 int velBase = 300;
 
-bool mano = false;
+bool mano = false; //false = derecha // true = izquierda //hay dos defines para usarlo
 
 float p = 0;
 float d = 0;
@@ -44,6 +44,7 @@ bool start = false;
 bool parpadeo_led_D = false;
 bool parpadeo_led_I = false;
 
+bool configurado = false;
 bool debug = false;
 bool test = false;
 
@@ -71,6 +72,7 @@ void setup() {
 void loop() {
 
   if (debug) {
+
     debug_inicio();
     if (objetivo_D == 0 || objetivo_I == 0) {
       objetivo_I = sensor3_analog();
@@ -84,8 +86,11 @@ void loop() {
     delay(10);
     return;
   }
-  // prints_sensores();
-  // return;
+
+  if (!configurado) {
+    configurado = configuracion();
+    return;
+  }
 
   if (!iniciado && !start) {
 
@@ -154,29 +159,25 @@ void loop() {
   //////////////////////////////////////////////
   if (start) {
 
-    
-      
+    // if (micros() - micros_filtro > (1000 / TIEMPO_FILTRO)) {
 
-    //if (micros() - micros_filtro > (1000 / TIEMPO_FILTRO)) {
+    // digitalWrite(PIN_DEBUG, test);
+    // test = !test;
 
-      //digitalWrite(PIN_DEBUG, test);
-      //test = !test;
-
-      filtro_sensores();
-      micros_filtro = micros();
+    filtro_sensores();
+    micros_filtro = micros();
     //}
 
     if (millis() - millis_PID >= 1) {
-      
+
       digitalWrite(LED_ADELANTE, LOW);
-      check_reference_wall_change(startedMillis, mano);
+      mano = check_reference_wall_change(startedMillis, mano);
 
       if (analogRead(S_PARED_2) > 2800) {
         frontal = true;
       } else {
         frontal = false;
       }
-      
 
       if (mano == IZQUIERDA) {
         if (sensor3_analog() > 0) {
@@ -189,7 +190,7 @@ void loop() {
           asignacion_vel_motores(0, 0);
           delay(50);
           asignacion_vel_motores(0, -300);
-          delay(150);
+          delay(100);
           asignacion_vel_motores(0, 0);
           return;
         }
@@ -205,7 +206,7 @@ void loop() {
           asignacion_vel_motores(0, 0);
           delay(50);
           asignacion_vel_motores(0, 300);
-          delay(150);
+          delay(100);
           asignacion_vel_motores(0, 0);
           return;
         }
