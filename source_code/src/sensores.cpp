@@ -6,6 +6,8 @@ const int UMBRAL_FILTRO = 2400;
 const int UMBRAL = 2800;
 const int CONTADOR = 3;
 
+
+int contador_frontal = 0;
 int contador_boton_D = 0;
 int contador_boton_I = 0;
 
@@ -98,9 +100,21 @@ void filtro_sensores() {
 bool sensor1() {
   return s1_bool;
 }
+
 bool sensor2() {
-  return s2_bool;
+if (s2_bool) {
+    contador_frontal++;
+    delay(5);
+  } else {
+    contador_frontal = 0;
+  }
+  if (contador_frontal >= CONTADOR) {
+    return true;
+  } else {
+    return false;
+  }
 }
+
 bool sensor3() {
   return s3_bool;
 }
