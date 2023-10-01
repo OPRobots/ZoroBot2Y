@@ -8,7 +8,7 @@
 #define DERECHA 0
 #define IZQUIERDA 1
 
-#define DETECCION_FRONTAL 600 //cuanto mas pequeño mas lejos
+#define DETECCION_FRONTAL 600 // cuanto mas pequeño mas lejos
 #define TIEMPO_FILTRO 20
 #define DINAMICO false
 #define MAX_ERROR_PID 150 // 0 anula la limitacion de error
@@ -27,7 +27,7 @@ float kp = 0.6;
 float ki = 0;
 float kd = 50;
 float kf = 0.1; // constante que determina cuanto afecta el sensor frontal para los giros dinamicos
-float ke = 1.1; //Variable experimental para incrementar el error cuando se aleja de la pared
+float ke = 1.1; // Variable experimental para incrementar el error cuando se aleja de la pared
 int sumError = 0;
 int ultError = 0;
 int correccion = 0;
@@ -107,16 +107,16 @@ void loop() {
       digitalWrite(LED_ADELANTE, LOW);
       mano = check_reference_wall_change(startedMillis, mano);
 
-    // if (sensor2()) {
-    //   frontal = true;
-    // } else {
-    //   frontal = false;
-    // }
+      // if (sensor2()) {
+      //   frontal = true;
+      // } else {
+      //   frontal = false;
+      // }
 
       if (mano == IZQUIERDA) {
         if (sensor3_analog() > 0) {
           error = objetivo_I - sensor3_analog();
-          if (error < 0){
+          if (error < 0) {
             error = error * ke;
           }
         } else {
@@ -124,10 +124,10 @@ void loop() {
         }
 
         if (sensor2() && !DINAMICO) {
-          //asignacion_vel_motores(0, 0);
-          //delay(50);
-          asignacion_vel_motores(0, -200);
-          delay(100);
+          // asignacion_vel_motores(0, 0);
+          // delay(50);
+          asignacion_vel_motores(0, -300);
+          delay(120);
           asignacion_vel_motores(0, 0);
           delay(50);
           return;
@@ -136,7 +136,7 @@ void loop() {
       if (mano == DERECHA) {
         if (sensor1_analog() > 0) {
           error = objetivo_D - sensor1_analog();
-          if (error < 0){
+          if (error < 0) {
             error = error * ke;
           }
         } else {
@@ -144,10 +144,10 @@ void loop() {
         }
 
         if (sensor2() && !DINAMICO) {
-          //asignacion_vel_motores(0, 0);
-          //delay(50);
-          asignacion_vel_motores(0, 400);
-          //delay(50);
+          // asignacion_vel_motores(0, 0);
+          // delay(50);
+          asignacion_vel_motores(0, 300);
+           delay(120);
           asignacion_vel_motores(0, 0);
           delay(25);
           return;
@@ -160,7 +160,7 @@ void loop() {
       // }
 
       if (DINAMICO && frontal) { // Añadir lectura delantera al error para tener giros dinamicos
-        error -= sensor2_analog() * kf;
+        error -= (sensor2_analog() - DETECCION_FRONTAL) * kf;
       }
 
       p = kp * error;

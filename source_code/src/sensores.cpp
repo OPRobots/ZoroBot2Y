@@ -3,7 +3,7 @@
 
 const int MAGNITUD_FILTRO = 20;
 const int UMBRAL_FILTRO = 2400;
-const int UMBRAL = 2800;
+const int UMBRAL = 2750;
 const int CONTADOR = 3;
 
 
@@ -104,7 +104,6 @@ bool sensor1() {
 bool sensor2() {
 if (s2_bool) {
     contador_frontal++;
-    delay(5);
   } else {
     contador_frontal = 0;
   }
