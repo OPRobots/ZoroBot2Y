@@ -8,7 +8,7 @@
 #define DERECHA 0
 #define IZQUIERDA 1
 
-#define DETECCION_FRONTAL 600 // cuanto mas pequeño mas lejos
+#define DETECCION_FRONTAL 650 // cuanto mas pequeño mas lejos
 #define TIEMPO_FILTRO 20
 #define DINAMICO false
 #define MAX_ERROR_PID 150 // 0 anula la limitacion de error
@@ -17,7 +17,7 @@ bool run = false;
 int objetivo_D = 0;
 int objetivo_I = 0;
 int error = 0;
-int velBase = 300;
+int velBase = 400;
 
 bool mano = false; // false = derecha // true = izquierda //hay dos defines para usarlo
 
@@ -126,10 +126,13 @@ void loop() {
         if (sensor2() && !DINAMICO) {
           // asignacion_vel_motores(0, 0);
           // delay(50);
-          asignacion_vel_motores(0, -300);
-          delay(120);
+          asignacion_vel_motores(0, -200);
+          delay(190);
           asignacion_vel_motores(0, 0);
-          delay(50);
+          for (size_t i = 0; i < TIEMPO_FILTRO; i++) {
+            filtro_sensores();
+            delay(50 / TIEMPO_FILTRO);
+          }
           return;
         }
       }
@@ -146,10 +149,14 @@ void loop() {
         if (sensor2() && !DINAMICO) {
           // asignacion_vel_motores(0, 0);
           // delay(50);
-          asignacion_vel_motores(0, 300);
-           delay(120);
+          asignacion_vel_motores(0, 200);
+          delay(190);
           asignacion_vel_motores(0, 0);
-          delay(25);
+          for (size_t i = 0; i < TIEMPO_FILTRO; i++) {
+            filtro_sensores();
+            delay(50 / TIEMPO_FILTRO);
+          }
+
           return;
         }
       }
