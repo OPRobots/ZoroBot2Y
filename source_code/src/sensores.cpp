@@ -3,7 +3,7 @@
 
 const int MAGNITUD_FILTRO = 20;
 const int UMBRAL_FILTRO = 2400;
-const int UMBRAL = 2750;
+const int UMBRAL = 2500; // cuanto mas pequeño mas lejos
 const int CONTADOR = 3;
 
 
