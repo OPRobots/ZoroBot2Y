@@ -8,10 +8,10 @@
 #define DERECHA 0
 #define IZQUIERDA 1
 
-#define DETECCION_FRONTAL 650 // cuanto mas pequeño mas lejos
+#define DETECCION_FRONTAL 800 // cuanto mas pequeño mas lejos
 #define TIEMPO_FILTRO 20
 #define DINAMICO false
-#define MAX_ERROR_PID 150 // 0 anula la limitacion de error
+#define MAX_ERROR_PID 200 // 0 anula la limitacion de error
 
 bool run = false;
 int objetivo_D = 0;
